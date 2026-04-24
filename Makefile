@@ -1,5 +1,6 @@
 PACKAGE_NAME = postgres_dba
 CLI_NAME = dba
+PYTHON_VERSION = 3.14
 
 .PHONY: help
 help:
@@ -41,7 +42,7 @@ github:
 
 .PHONY: install
 install:
-	uv tool install .
+	uv tool install --python $(PYTHON_VERSION) .
 	@if which $(CLI_NAME) > /dev/null 2>&1; then \
 		echo "$(CLI_NAME) installed successfully!"; \
 	else \
@@ -61,7 +62,7 @@ test:
 .PHONY: upgrade
 upgrade:
 	@echo "Reinstalling $(CLI_NAME)..."
-	uv tool install --force --reinstall .
+	uv tool install --python $(PYTHON_VERSION) --force --reinstall .
 
 .PHONY: validate
 validate:

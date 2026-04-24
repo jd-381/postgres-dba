@@ -1,6 +1,6 @@
-# postgres dba
+# Postgres DBA
 
-postgres dba is an awesome CLI tool!
+A toolkit for Postgres DBAs.
 
 ## Prerequisites
 
@@ -39,10 +39,10 @@ List available commands:
 dba --help
 ```
 
-Greet the world:
+Watch active queries:
 
 ```bash
-dba hello --name World
+dba proc -a -w 5
 ```
 
 ## Development

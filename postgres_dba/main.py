@@ -20,8 +20,10 @@ from typing import Annotated
 import typer
 from rich.logging import RichHandler
 
-from postgres_dba.commands.hello import app as hello
-from postgres_dba.commands.mail import app as mail
+from postgres_dba.commands.cron import app as cron
+from postgres_dba.commands.processlist import app as processlist
+from postgres_dba.commands.replication import app as replication
+from postgres_dba.commands.table import app as table
 
 # Get version from pyproject.toml via package metadata
 # This is the recommended best practice - single source of truth
@@ -36,7 +38,7 @@ logging.basicConfig(level=logging.INFO, format="%(message)s", handlers=[RichHand
 app = typer.Typer(
     add_completion=False,
     no_args_is_help=True,
-    help="A CLI application demonstrating Typer best practices with commands and subcommands.",
+    help="A toolkit for Postgres DBAs.",
 )
 
 
@@ -46,7 +48,7 @@ def version_callback(value: bool) -> None:
     This callback is triggered when the user passes --version flag.
     """
     if value:
-        typer.echo(f"template-cli version {__version__}")
+        typer.echo(f"dba {__version__}")
         raise typer.Exit()
 
 
@@ -69,8 +71,10 @@ def main(
 
 
 # Register sub-commands by adding their Typer apps
-app.add_typer(hello, name="hello", help="Greet someone in various languages")
-app.add_typer(mail, name="mail", help="Manage and interact with email messages")
+app.add_typer(cron, name="cron", help="pg_cron administration")
+app.add_typer(processlist, name="proc", help="Processlist administration")
+app.add_typer(replication, name="repl", help="Replication administration")
+app.add_typer(table, name="table", help="Table administration")
 
 
 if __name__ == "__main__":

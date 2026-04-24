@@ -43,7 +43,7 @@ Use this to verify your setup or manually validate changes before committing. Th
 **During development** - Test without installing:
 
 ```bash
-uv run dba hello --name World
+uv run dba proc
 ```
 
 **Production testing** - Install and test:
@@ -53,7 +53,7 @@ uv run dba hello --name World
 make install
 
 # Run the installed CLI
-dba hello --name World
+uv run dba proc
 
 # After code changes, reinstall with fresh cache
 make upgrade
