@@ -123,10 +123,11 @@ jobs:
           find "${{ inputs.package_name }}" -name "*.py" -type f -exec sed -i "s/from template_package\./from ${{ inputs.package_name }}./g" {} +
           find "${{ inputs.package_name }}" -name "*.py" -type f -exec sed -i "s/import template_package/import ${{ inputs.package_name }}/g" {} +
 
-          # Update version() call in main.py to use the distribution name
+          # Update version() call and CLI name in main.py
           sed -i "s/version(\"template-package\")/version(\"$DIST_NAME\")/" "${{ inputs.package_name }}/main.py"
+          sed -i "s/template-cli/${{ inputs.cli_name }}/g" "${{ inputs.package_name }}/main.py"
 
-          echo "✅ Updated imports and version() call in package files"
+          echo "✅ Updated imports, version() call, and CLI name in package files"
 
       - name: Update CONTRIBUTING.md
         run: |

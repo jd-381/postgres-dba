@@ -1,11 +1,11 @@
 [project]
 name = "postgres-dba"
 version = "0.1.0"
-description = "Add your description here"
+description = "A toolkit for Postgres DBAs."
 readme = "README.md"
-authors = [{ name = "Your Name", email = "your.email@example.com" }]
+authors = [{ name = "J", email = "jd-381@users.noreply.github.com" }]
 requires-python = ">=3.14"
-dependencies = ["typer>=0.21.0"]
+dependencies = ["psycopg[binary]>=3.3.3", "pyyaml>=6.0.3", "typer>=0.21.0"]
 
 [dependency-groups]
 dev = [
