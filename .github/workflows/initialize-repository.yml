@@ -1,0 +1,256 @@
+name: Initialize Repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: "Python package name (e.g., mail_fetcher) - must use underscores"
+        required: true
+        type: string
+      cli_name:
+        description: "CLI executable name (e.g., ma-fe) - must use hyphens if multi-word"
+        required: true
+        type: string
+
+run-name: Initialize Repository - ${{ inputs.package_name }}
+
+jobs:
+  initialize:
+    name: Initialize Repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if already initialized
+        run: |
+          if [ ! -d "template_package" ]; then
+            echo "❌ Error: Repository has already been initialized!"
+            echo ""
+            echo "The 'template_package' directory no longer exists, which means this repository"
+            echo "has already been customized. This workflow should only be run once."
+            echo ""
+            echo "If you need to rename your package again, please do so manually or"
+            echo "create a fresh repository from the template."
+            exit 1
+          fi
+          echo "✅ Repository not yet initialized, proceeding..."
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Validate inputs
+        run: |
+          PACKAGE_NAME="${{ inputs.package_name }}"
+          CLI_NAME="${{ inputs.cli_name }}"
+
+          # Validate package_name uses underscores (no hyphens)
+          if [[ "$PACKAGE_NAME" =~ - ]]; then
+            echo "❌ Error: package_name must use underscores, not hyphens (e.g., mail_fetcher)"
+            echo "   You provided: $PACKAGE_NAME"
+            exit 1
+          fi
+
+          # Validate package_name is a valid Python identifier
+          if ! uv run python3 -c "import sys; sys.exit(0 if '$PACKAGE_NAME'.isidentifier() else 1)"; then
+            echo "❌ Error: package_name must be a valid Python identifier"
+            echo "   You provided: $PACKAGE_NAME"
+            exit 1
+          fi
+
+          # Validate CLI_NAME doesn't contain underscores
+          if [[ "$CLI_NAME" =~ _ ]]; then
+            echo "⚠️  Warning: cli_name contains underscores. Convention is to use hyphens for multi-word CLI names."
+            echo "   You provided: $CLI_NAME"
+            echo "   Consider using: ${CLI_NAME//_/-}"
+          fi
+
+          echo "✅ Validation passed"
+          echo "   Package name: $PACKAGE_NAME"
+          echo "   CLI name: $CLI_NAME"
+
+      - name: Rename package directory
+        run: |
+          if [ ! -d "template_package" ]; then
+            echo "❌ Error: template_package directory not found!"
+            echo "This should never happen - the workflow should have exited earlier."
+            exit 1
+          fi
+          mv template_package "${{ inputs.package_name }}"
+          echo "✅ Renamed template_package/ to ${{ inputs.package_name }}/"
+
+      - name: Update Makefile
+        run: |
+          sed -i 's/^PACKAGE_NAME = template_package$/PACKAGE_NAME = ${{ inputs.package_name }}/' Makefile
+          sed -i 's/^CLI_NAME = template-cli$/CLI_NAME = ${{ inputs.cli_name }}/' Makefile
+          echo "✅ Updated Makefile"
+
+      - name: Update pyproject.toml
+        run: |
+          # Convert package_name underscores to hyphens for distribution name (PEP 508)
+          DIST_NAME="${{ inputs.package_name }}"
+          DIST_NAME="${DIST_NAME//_/-}"
+
+          # Update project name
+          sed -i "s/^name = \"template-package\"$/name = \"$DIST_NAME\"/" pyproject.toml
+
+          # Update CLI script entry point
+          sed -i "s/^template-cli = \"template_package\.main:app\"$/${{ inputs.cli_name }} = \"${{ inputs.package_name }}.main:app\"/" pyproject.toml
+
+          # Update packages list
+          sed -i "s/^packages = \[\"template_package\"\]$/packages = [\"${{ inputs.package_name }}\"]/" pyproject.toml
+
+          echo "✅ Updated pyproject.toml"
+
+      - name: Update imports
+        run: |
+          # Convert package_name underscores to hyphens for distribution name (PEP 508)
+          DIST_NAME="${{ inputs.package_name }}"
+          DIST_NAME="${DIST_NAME//_/-}"
+
+          # Update all Python files in tests directory
+          find tests -name "*.py" -type f -exec sed -i "s/from template_package\./from ${{ inputs.package_name }}./g" {} +
+          find tests -name "*.py" -type f -exec sed -i "s/import template_package/import ${{ inputs.package_name }}/g" {} +
+
+          # Update all Python files in package directory
+          find "${{ inputs.package_name }}" -name "*.py" -type f -exec sed -i "s/from template_package\./from ${{ inputs.package_name }}./g" {} +
+          find "${{ inputs.package_name }}" -name "*.py" -type f -exec sed -i "s/import template_package/import ${{ inputs.package_name }}/g" {} +
+
+          # Update version() call in main.py to use the distribution name
+          sed -i "s/version(\"template-package\")/version(\"$DIST_NAME\")/" "${{ inputs.package_name }}/main.py"
+
+          echo "✅ Updated imports and version() call in package files"
+
+      - name: Update CONTRIBUTING.md
+        run: |
+          sed -i "s/template-cli/${{ inputs.cli_name }}/g" CONTRIBUTING.md
+          sed -i "s/template_package/${{ inputs.package_name }}/g" CONTRIBUTING.md
+          echo "✅ Updated CONTRIBUTING.md"
+
+      - name: Update TEMPLATE_README.md and replace README.md
+        run: |
+          # Convert package_name underscores to spaces for user-friendly display name
+          DISPLAY_NAME="${{ inputs.package_name }}"
+          DISPLAY_NAME="${DISPLAY_NAME//_/ }"
+
+          sed -i "s/template-cli/${{ inputs.cli_name }}/g" templates/TEMPLATE_README.md
+          sed -i "s/template_package/$DISPLAY_NAME/g" templates/TEMPLATE_README.md
+
+          # Replace README.md with the customized template
+          mv templates/TEMPLATE_README.md README.md
+
+          # Remove templates directory
+          rm -rf templates/
+
+          echo "✅ Updated and replaced README.md, removed templates directory"
+
+      - name: Regenerate documentation
+        run: |
+          make docs
+          echo "✅ Regenerated USAGE.md with updated package and CLI names"
+
+      - name: Verify changes
+        run: |
+          echo "📋 Changed files:"
+          git status --short
+
+          echo ""
+          echo "📝 Makefile changes:"
+          git diff Makefile || true
+
+          echo ""
+          echo "📝 pyproject.toml changes:"
+          git diff pyproject.toml || true
+
+          echo ""
+          echo "📝 Test file changes:"
+          git diff tests/ || true
+
+          echo ""
+          echo "📝 Package file changes:"
+          git diff "${{ inputs.package_name }}/" || true
+
+      - name: Run validation checks
+        run: |
+          # Install dependencies and set up hooks
+          make deps
+
+          # Run validation (lint, format, test)
+          make validate
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add -A
+
+          git commit -m "$(cat <<'EOF'
+          chore: initialize repository
+
+          - Package name: ${{ inputs.package_name }}
+          - CLI name: ${{ inputs.cli_name }}
+
+          Automated initialization performed by GitHub Actions workflow.
+          EOF
+          )"
+
+          git push
+
+          echo "✅ Changes committed and pushed successfully!"
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "🎉 Repository initialization complete!"
+          echo ""
+          echo "📦 Package name: ${{ inputs.package_name }}"
+          echo "⚡ CLI name: ${{ inputs.cli_name }}"
+          echo ""
+          echo "Next steps:"
+          echo "1. Pull the latest changes: git pull"
+          echo "2. Install dependencies and hooks: make deps"
+          echo "3. Install the CLI: make install"
+          echo "4. Test your CLI: ${{ inputs.cli_name }} --help"
+
+          # Add to workflow summary
+          cat >> $GITHUB_STEP_SUMMARY <<'EOF'
+          ## 🎉 Repository Initialization Complete!
+
+          **Configuration:**
+          - 📦 Package name: `${{ inputs.package_name }}`
+          - ⚡ CLI name: `${{ inputs.cli_name }}`
+
+          ### Next Steps
+
+          1. **Pull the latest changes:**
+             ```bash
+             git pull
+             ```
+
+          2. **Install dependencies and set up hooks:**
+             ```bash
+             make deps
+             ```
+
+          3. **Install the CLI:**
+             ```bash
+             make install
+             ```
+
+          4. **Test your CLI:**
+             ```bash
+             ${{ inputs.cli_name }} --help
+             ```
+
+          ---
+
+          You're all set! Start building your CLI by modifying the commands in `${{ inputs.package_name }}/commands/`.
+          EOF

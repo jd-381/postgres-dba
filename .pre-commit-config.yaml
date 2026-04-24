@@ -1,0 +1,26 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version
+    rev: v0.14.10
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: [--fix]
+      # Run the formatter
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: uv run pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: docs
+        name: generate docs
+        entry: bash -c 'make docs && git diff --exit-code USAGE.md'
+        language: system
+        pass_filenames: false
+        always_run: true

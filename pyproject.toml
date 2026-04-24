@@ -1,0 +1,29 @@
+[project]
+name = "template-package"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [{ name = "Your Name", email = "your.email@example.com" }]
+requires-python = ">=3.14"
+dependencies = ["typer>=0.21.0"]
+
+[dependency-groups]
+dev = [
+    "typer-cli>=0.21.0",
+    "pytest>=9.0.2",
+    "ruff>=0.14.10",
+    "pre-commit>=4.5.1",
+]
+
+[project.scripts]
+template-cli = "template_package.main:app"
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["template_package"]
+
+[tool.ruff]
+line-length = 120
