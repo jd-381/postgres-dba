@@ -4,9 +4,9 @@ import logging
 
 import pytest
 
-from template_package.commands.hello import HelloService
-from template_package.commands.mail import MailService
-from template_package.models.language import Language
+from postgres_dba.commands.hello import HelloService
+from postgres_dba.commands.mail import MailService
+from postgres_dba.models.language import Language
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ def test_hello_service_default_language(capsys: pytest.CaptureFixture[str]) -> N
 
 def test_mail_service_fetch() -> None:
     """Test MailService.fetch method."""
-    from template_package.models.mail import mail_data
+    from postgres_dba.models.mail import mail_data
 
     service = MailService(logger)
     mail = service.fetch()
@@ -52,7 +52,7 @@ def test_mail_service_fetch() -> None:
 
 def test_mail_service_delete() -> None:
     """Test MailService.delete method."""
-    from template_package.models.mail import mail_data
+    from postgres_dba.models.mail import mail_data
 
     # Store original data
     original_data = list(mail_data)

@@ -15,9 +15,9 @@ from typing import Annotated
 
 import typer
 
-from template_package.common.cli_utils import DEBUG_OPTION
-from template_package.common.logger_utils import cyan
-from template_package.models.language import Language
+from postgres_dba.common.cli_utils import DEBUG_OPTION
+from postgres_dba.common.logger_utils import cyan
+from postgres_dba.models.language import Language
 
 LOGGER = logging.getLogger(__name__)
 

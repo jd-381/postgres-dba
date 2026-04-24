@@ -2,7 +2,7 @@
 
 from typer.testing import CliRunner
 
-from template_package.main import app
+from postgres_dba.main import app
 
 runner = CliRunner()
 

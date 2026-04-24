@@ -3,8 +3,8 @@
 import pytest
 from typer.testing import CliRunner
 
-from template_package.main import app
-from template_package.models.mail import Mail, mail_data
+from postgres_dba.main import app
+from postgres_dba.models.mail import Mail, mail_data
 
 runner = CliRunner()
 

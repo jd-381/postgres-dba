@@ -1,11 +1,11 @@
-# `template-cli`
+# `dba`
 
 A CLI application demonstrating Typer best practices with commands and subcommands.
 
 **Usage**:
 
 ```console
-$ template-cli [OPTIONS] COMMAND [ARGS]...
+$ dba [OPTIONS] COMMAND [ARGS]...
 ```
 
 **Options**:
@@ -18,14 +18,14 @@ $ template-cli [OPTIONS] COMMAND [ARGS]...
 * `hello`: Greet someone in various languages
 * `mail`: Manage and interact with email messages
 
-## `template-cli hello`
+## `dba hello`
 
 Greet someone in various languages
 
 **Usage**:
 
 ```console
-$ template-cli hello [OPTIONS] COMMAND [ARGS]...
+$ dba hello [OPTIONS] COMMAND [ARGS]...
 ```
 
 **Options**:
@@ -35,14 +35,14 @@ $ template-cli hello [OPTIONS] COMMAND [ARGS]...
 * `--debug`: Print debug messages
 * `--help`: Show this message and exit.
 
-## `template-cli mail`
+## `dba mail`
 
 Manage and interact with email messages
 
 **Usage**:
 
 ```console
-$ template-cli mail [OPTIONS] COMMAND [ARGS]...
+$ dba mail [OPTIONS] COMMAND [ARGS]...
 ```
 
 **Options**:
@@ -55,14 +55,14 @@ $ template-cli mail [OPTIONS] COMMAND [ARGS]...
 * `fetch`: Fetch mail
 * `error`: Show example error
 
-### `template-cli mail delete`
+### `dba mail delete`
 
 Delete mail
 
 **Usage**:
 
 ```console
-$ template-cli mail delete [OPTIONS]
+$ dba mail delete [OPTIONS]
 ```
 
 **Options**:
@@ -71,14 +71,14 @@ $ template-cli mail delete [OPTIONS]
 * `--debug`: Print debug messages
 * `--help`: Show this message and exit.
 
-### `template-cli mail fetch`
+### `dba mail fetch`
 
 Fetch mail
 
 **Usage**:
 
 ```console
-$ template-cli mail fetch [OPTIONS]
+$ dba mail fetch [OPTIONS]
 ```
 
 **Options**:
@@ -86,14 +86,14 @@ $ template-cli mail fetch [OPTIONS]
 * `--debug`: Print debug messages
 * `--help`: Show this message and exit.
 
-### `template-cli mail error`
+### `dba mail error`
 
 Show example error
 
 **Usage**:
 
 ```console
-$ template-cli mail error [OPTIONS]
+$ dba mail error [OPTIONS]
 ```
 
 **Options**:

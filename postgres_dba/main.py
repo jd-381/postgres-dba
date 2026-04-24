@@ -20,12 +20,12 @@ from typing import Annotated
 import typer
 from rich.logging import RichHandler
 
-from template_package.commands.hello import app as hello
-from template_package.commands.mail import app as mail
+from postgres_dba.commands.hello import app as hello
+from postgres_dba.commands.mail import app as mail
 
 # Get version from pyproject.toml via package metadata
 # This is the recommended best practice - single source of truth
-__version__ = version("template-package")
+__version__ = version("postgres-dba")
 
 # Configure Rich logging for beautiful, formatted console output
 logging.basicConfig(level=logging.INFO, format="%(message)s", handlers=[RichHandler(markup=True)])

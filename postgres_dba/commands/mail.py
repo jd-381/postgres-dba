@@ -15,8 +15,8 @@ from typing import Annotated
 
 import typer
 
-from template_package.common.cli_utils import DEBUG_OPTION
-from template_package.models.mail import Mail, mail_data
+from postgres_dba.common.cli_utils import DEBUG_OPTION
+from postgres_dba.models.mail import Mail, mail_data
 
 LOGGER = logging.getLogger(__name__)
 

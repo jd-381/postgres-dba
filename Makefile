@@ -1,5 +1,5 @@
-PACKAGE_NAME = template_package
-CLI_NAME = template-cli
+PACKAGE_NAME = postgres_dba
+CLI_NAME = dba
 
 .PHONY: help
 help:

@@ -43,7 +43,7 @@ Use this to verify your setup or manually validate changes before committing. Th
 **During development** - Test without installing:
 
 ```bash
-uv run template-cli hello --name World
+uv run dba hello --name World
 ```
 
 **Production testing** - Install and test:
@@ -53,7 +53,7 @@ uv run template-cli hello --name World
 make install
 
 # Run the installed CLI
-template-cli hello --name World
+dba hello --name World
 
 # After code changes, reinstall with fresh cache
 make upgrade
@@ -87,7 +87,7 @@ Run `make` without arguments to see all available commands.
 
 ```
 .
-├── template_package/                 # Python module package
+├── postgres_dba/                 # Python module package
 │   ├── commands/                     # CLI command modules
 │   ├── common/                       # Shared utilities
 │   ├── models/                       # Data models
