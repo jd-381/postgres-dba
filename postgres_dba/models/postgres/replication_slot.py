@@ -39,7 +39,7 @@ class ReplicationSlot(PostgresData["ReplicationSlot"]):
         ).format()
         if slot_name:
             sql += SQL("WHERE slot_name = {name}").format(name=slot_name)
-        sql += SQL(" ORDER BY lag_size DESC").format()
+        sql += SQL(" ORDER BY lag_size DESC NULLS LAST").format()
         return sql
 
 
