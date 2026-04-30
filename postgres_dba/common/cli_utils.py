@@ -23,7 +23,9 @@ def validate_user_input_debug(input: bool) -> bool:
     return input
 
 
-def validate_user_input_table(input: str) -> tuple[str, str]:
+def validate_user_input_table(input: str | None) -> tuple[str, str] | None:
+    if input is None:
+        return None
     parts = [p.strip() for p in input.split(".")]
     if len(parts) == 2:
         schema, name = parts
@@ -37,13 +39,25 @@ def validate_user_input_table(input: str) -> tuple[str, str]:
 DATABASE_OPTION = Annotated[str, typer.Option("--database", "-d", help="Name of database")]
 DEBUG_OPTION = Annotated[bool, typer.Option("--debug", help="Print SQL statements", callback=validate_user_input_debug)]
 LIMIT_OPTION = Annotated[int, typer.Option("--limit", "-l", help="Limit rows")]
+
+TABLE_HELP = "Name of table as \\[schema.]table (defaults to 'public' schema)"
 TABLE_OPTION = Annotated[
     str,
     typer.Option(
         "--table",
         "-t",
-        help="Name of table as \\[schema.]table (defaults to 'public' schema)",
+        help=TABLE_HELP,
         callback=validate_user_input_table,
     ),
 ]
+OPTIONAL_TABLE_OPTION = Annotated[
+    str | None,
+    typer.Option(
+        "--table",
+        "-t",
+        help=TABLE_HELP,
+        callback=validate_user_input_table,
+    ),
+]
+
 WATCH_OPTION = Annotated[float, typer.Option("--watch", "-w", help="Watch query interval (in seconds)")]

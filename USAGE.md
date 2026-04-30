@@ -16,6 +16,7 @@ $ dba [OPTIONS] COMMAND [ARGS]...
 **Commands**:
 
 * `cron`: pg_cron administration
+* `index`: Index administration
 * `proc`: Processlist administration
 * `repl`: Replication administration
 * `table`: Table administration
@@ -72,6 +73,80 @@ $ dba cron logs [OPTIONS]
 * `-l, --limit INTEGER`: Limit rows  [default: 14]
 * `-j, --job INTEGER`: Job ID (optional)
 * `-d, --database TEXT`: Name of database  [default: postgres]
+* `--debug`: Print SQL statements
+* `--help`: Show this message and exit.
+
+## `dba index`
+
+Index administration
+
+**Usage**:
+
+```console
+$ dba index [OPTIONS] COMMAND [ARGS]...
+```
+
+**Options**:
+
+* `--help`: Show this message and exit.
+
+**Commands**:
+
+* `progress`: Get index creation progress
+* `size`: Get index sizes
+* `unused`: Get unused indexes
+
+### `dba index progress`
+
+Get index creation progress
+
+**Usage**:
+
+```console
+$ dba index progress [OPTIONS]
+```
+
+**Options**:
+
+* `-d, --database TEXT`: Name of database  [required]
+* `-w, --watch FLOAT`: Watch query interval (in seconds)  [default: 0]
+* `--debug`: Print SQL statements
+* `--help`: Show this message and exit.
+
+### `dba index size`
+
+Get index sizes
+
+**Usage**:
+
+```console
+$ dba index size [OPTIONS]
+```
+
+**Options**:
+
+* `-d, --database TEXT`: Name of database  [required]
+* `-t, --table TEXT`: Name of table as [schema.]table (defaults to &#x27;public&#x27; schema)
+* `-i, --index TEXT`: Name of index
+* `-l, --limit INTEGER`: Limit rows  [default: 10]
+* `--debug`: Print SQL statements
+* `--help`: Show this message and exit.
+
+### `dba index unused`
+
+Get unused indexes
+
+**Usage**:
+
+```console
+$ dba index unused [OPTIONS]
+```
+
+**Options**:
+
+* `-d, --database TEXT`: Name of database  [required]
+* `-t, --table TEXT`: Name of table as [schema.]table (defaults to &#x27;public&#x27; schema)
+* `-l, --limit INTEGER`: Limit rows  [default: 10]
 * `--debug`: Print SQL statements
 * `--help`: Show this message and exit.
 

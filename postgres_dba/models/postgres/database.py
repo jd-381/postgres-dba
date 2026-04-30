@@ -3,6 +3,7 @@ from types import TracebackType
 from typing import TYPE_CHECKING, Self
 
 from postgres_dba.models.postgres.heartbeat import Heartbeat, PostgresHeartbeat
+from postgres_dba.models.postgres.index import Index, IndexProgress
 from postgres_dba.models.postgres.instance import (
     Composed,
     Connection,
@@ -46,6 +47,26 @@ class PostgresDatabase:
         self.cur.execute(sql)
         rows: list[TupleRow] = self.cur.fetchall()
         return [Heartbeat.from_row(row) for row in rows]
+
+    def index_progress(self) -> list["IndexProgress"]:
+        sql: Composed = IndexProgress._query()
+        self.cur.execute(sql)
+        rows: list[TupleRow] = self.cur.fetchall()
+        return [IndexProgress.from_row(row) for row in rows]
+
+    def indexes(
+        self,
+        schema_name: str | None = None,
+        table_name: str | None = None,
+        index_name: str | None = None,
+        *,
+        scans: bool = True,
+        limit: int,
+    ) -> list[Index]:
+        sql: Composed = Index._query(schema_name, table_name, index_name, scans=scans, limit=limit)
+        self.cur.execute(sql)
+        rows: list[TupleRow] = self.cur.fetchall()
+        return [Index.from_row(row) for row in rows]
 
     def pg_cron(self) -> "PgCron":
         from postgres_dba.models.postgres.pg_cron import PgCron

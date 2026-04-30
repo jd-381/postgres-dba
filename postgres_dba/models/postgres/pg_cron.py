@@ -66,9 +66,7 @@ class CronJobRunDetail(PostgresData["CronJobRunDetail"]):
             conditions.append(SQL("d.jobid = {job_id} ").format(job_id=Literal(job_id)))
         if conditions:
             sql += SQL("WHERE ") + SQL("AND ").join(conditions)
-        sql += SQL("ORDER BY start_time DESC NULLS LAST ").format()
-        if limit:
-            sql += SQL("LIMIT {limit}").format(limit=Literal(limit))
+        sql += SQL("ORDER BY start_time DESC NULLS LAST LIMIT {limit}").format(limit=Literal(limit))
         return sql
 
 

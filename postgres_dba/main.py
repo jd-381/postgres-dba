@@ -21,6 +21,7 @@ import typer
 from rich.logging import RichHandler
 
 from postgres_dba.commands.cron import app as cron
+from postgres_dba.commands.index import app as index
 from postgres_dba.commands.processlist import app as processlist
 from postgres_dba.commands.replication import app as replication
 from postgres_dba.commands.table import app as table
@@ -72,6 +73,7 @@ def main(
 
 # Register sub-commands by adding their Typer apps
 app.add_typer(cron, name="cron", help="pg_cron administration")
+app.add_typer(index, name="index", help="Index administration")
 app.add_typer(processlist, name="proc", help="Processlist administration")
 app.add_typer(replication, name="repl", help="Replication administration")
 app.add_typer(table, name="table", help="Table administration")
